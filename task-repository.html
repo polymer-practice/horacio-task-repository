@@ -185,12 +185,12 @@
         for (var i = 0; i < this.taskListRepo.length; i++) {
 					if(this.taskListRepo[i].key === valueToUpdate.key) {
 						this.taskListRepo[i] = valueToUpdate;
-						return;
+						break;
 					}
 				}
 
+        
         console.log('Updated task list: ', this.taskListRepo);
-
         setTimeout(() => { this.dispatchEvent(updateTaskEvent); }, 300);
       }
 
