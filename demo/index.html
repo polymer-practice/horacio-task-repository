@@ -28,11 +28,18 @@
           let repo = document.getElementById('repo');
           repo.addEventListener('page-event', event => { console.log(event.detail); });
           repo.addEventListener('task-created', event => { console.log('Task created successfully'); })
+          repo.addEventListener('task-updated', event => { console.log('Task updated successfully'); })
           repo.offset = 0;
           repo.limit=10;
           repo.newTask = {
             key: 20,
             title: 'Learn reactive Polymer',
+            canceled: false,
+            done: false
+          }
+          repo.updateTask = {
+            key: 18,
+            title: 'Buy a laser saber 2',
             canceled: false,
             done: false
           }
