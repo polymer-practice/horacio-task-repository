@@ -22,8 +22,21 @@
       <h3>Basic task-repository demo</h3>
       <demo-snippet>
         <template>
-          <task-repository id="" offset=""></task-repository>
+          <task-repository offset="10" limit="5" id="repo"></task-repository>
         </template>
+        <script>
+          let repo = document.getElementById('repo');
+          repo.addEventListener('page-event', event => { console.log(event.detail); });
+          repo.addEventListener('task-created', event => { console.log('Task created successfully'); })
+          repo.offset = 0;
+          repo.limit=10;
+          repo.newTask = {
+            key: 20,
+            title: 'Learn reactive Polymer',
+            canceled: false,
+            done: false
+          }
+        </script>
       </demo-snippet>
     </div>
   </body>

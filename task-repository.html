@@ -1,38 +1,38 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <dom-module id="task-repository">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
-
   <script>
-    /**
-     * `task-repository`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
     class TaskRepository extends Polymer.Element {
       static get is() { return 'task-repository'; }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'task-repository'
+          offset: {
+            type: Number,
+            value: 0
+          },
+          limit: {
+            type: Number,
+            value: 5
+          },
+          newTask: {
+            type: Object,
+            observer: '_addNewTask'
+          },
+          updateTask: {
+            type: Object,
+            observer: '_updateTask'
           }
         };
       }
 
+      static get observers() {
+        return ['_getPage(offset,limit)']
+      }
+
       constructor() {
         super();
-        this.taskList = [
+
+        this.taskListRepo = [
           {
             key: 0,
             title: 'To do the weekly shopping',
@@ -154,6 +154,78 @@
             done: false
           }
         ]
+      }
+
+      _addNewTask(newValue) {
+        // console.log("new", newValue)
+        const newTaskEvent = new CustomEvent(
+          'task-created',
+          {
+            bubbles: true,
+            composed: true
+          }
+        )
+
+        this.taskListRepo.unshift(newValue);
+        //console.log('New task list: ', this.taskListRepo);
+
+        setTimeout(() => { this.dispatchEvent(newTaskEvent); }, 300);
+      }
+
+      _updateTask(valueToUpdate) {
+        console.log("update:", valueToUpdate)
+        const updateTaskEvent = new CustomEvent(
+          'task-updated',
+          {
+            bubbles: true,
+            composed: true
+          }
+        )
+
+        for (var i = 0; i < this.taskListRepo.length; i++) {
+					if(this.taskListRepo[i].key === valueToUpdate.key) {
+						this.taskListRepo[i] = valueToUpdate;
+						return;
+					}
+				}
+
+        console.log('Updated task list: ', this.taskListRepo);
+
+        setTimeout(() => { this.dispatchEvent(updateTaskEvent); }, 300);
+      }
+
+      _getPage(offset, limit) {
+        const leng = this.taskListRepo.length;
+
+        let start = offset;
+        let end = offset + limit;
+        let pageEvent;
+
+        if (start < 0) {
+          start = 0;
+        }
+
+        if (end > leng) {
+          end = leng
+        }
+
+        pageEvent = new CustomEvent(
+          'page-event',
+          {
+            bubbles: true,
+            composed: true,
+            detail: {
+              total: leng,
+              offset: offset,
+              limit: limit,
+              page: this.taskListRepo.slice(start, end)
+            }
+          }
+        )
+
+        setTimeout(() => {
+          this.dispatchEvent(pageEvent)
+        }, 300)
       }
     }
 
